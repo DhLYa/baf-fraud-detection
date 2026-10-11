@@ -1,6 +1,7 @@
 data/*.csv
 data/*.parquet
 data/preprocessed/
+results/shap/
 models/
 .ipynb_checkpoints/
 __pycache__/
