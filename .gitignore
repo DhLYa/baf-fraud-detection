@@ -1,5 +1,6 @@
 data/*.csv
 data/*.parquet
+data/preprocessed/
 models/
 .ipynb_checkpoints/
 __pycache__/
