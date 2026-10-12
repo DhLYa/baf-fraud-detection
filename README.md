@@ -334,9 +334,9 @@ previous one wrote.
 
 `03_hyperparameter_tuning` and `04_evaluation_and_fairness` train XGBoost on a GPU
 (`XGB_DEVICE = "cuda"`). Set `XGB_DEVICE = "cpu"` if you don't have one. On an AMD Ryzen
-7 9800X3D CPU and an NVIDIA RTX 4070 SUPER GPU, `03` takes about 14 minutes (823 s): about 9.5 minutes for the logistic regression
-search, which runs on the CPU, and about 4 minutes for the XGBoost search. The other
-notebooks take under 2 minutes each.
+7 9800X3D CPU and an NVIDIA RTX 4070 SUPER GPU, `03` takes ~15 minutes. Most of that is the
+logistic regression search (about 10-12 minutes, on the CPU), and the XGBoost search takes
+about 4 minutes. The other notebooks take under 2 minutes each.
 
 `05_explainability` caches SHAP values in `results/shap/` and only recomputes them when
 the model file changes.
@@ -362,8 +362,7 @@ and `04`. With it off, results print inline and no server is needed.
   evaluated.
 - The data is synthetic. It is designed to be realistic, but results may not carry over
   to a specific bank's data.
-- Fairness is checked for age only. Income and employment status are also protected but weren't analysed
-  attributes in the paper.
+- Fairness is checked for age only. Income and employment status are also protected but weren't analysed.
 - A single threshold, set at 5% FPR, is evaluated. A real deployment would pick the
   threshold from review capacity and the cost of fraud.
 - Tuning, early stopping, threshold setting and reporting all use month 7, so the reported
@@ -376,13 +375,15 @@ and `04`. With it off, results print inline and no server is needed.
 - Add more models, including approaches beyond supervised classification, such as
   autoencoder anomaly detection trained on legitimate applications only, using
   reconstruction error as the fraud score.
+- Test resampling as an alternative to the current class weighting (`class_weight` and
+  `scale_pos_weight`): random undersampling of legitimate applications, random
+  oversampling of fraud, and synthetic oversampling such as SMOTE or SMOTE-NC for categorical features. Resample the training months only, and compare at the
+  same 5% FPR operating point.
 - Evaluate on the 5 BAF variants to see how bias in the training data changes the
   predictive equality results.
 - Apply fairness mitigations, such as group-specific thresholds or reweighting, and
   measure the trade-off between recall and FPR ratio.
-- Monitor drift month by month and test retraining strategies.
 - Add a cost-based threshold that accounts for fraud losses and review costs.
-- Compare with LightGBM and CatBoost, using their native categorical handling.
 
 ## Citation
 
