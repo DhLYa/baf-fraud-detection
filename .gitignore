@@ -8,3 +8,4 @@ __pycache__/
 .env
 mlartifacts/
 mlflow.db
+notebooks/Base.ipynb
