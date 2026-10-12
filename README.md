@@ -254,7 +254,8 @@ how much of the disparity removing age actually fixes, and what it costs in reca
 - The FPR for applicants aged 50+ falls from about 12% to about 10%, while under-50s rise
   slightly from about 4.0% to 4.3%. Older applicants are still wrongly flagged more than
   twice as often.
-- FPR rises steadily with age. With age included, tuned XGBoost flags 1.4% of legitimate
+- FPR rises with age for every model, apart from a dip at 70-79 (8.6%) for XGBoost without
+  age. With age included, tuned XGBoost flags 1.4% of legitimate
   applicants in their teens but 28% of those aged 80+; without age, that becomes 1.8% and
   17%. The 80+ bucket has only 71 legitimate validation applicants, so its FPR is noisy.
 
@@ -289,8 +290,8 @@ From the tuned XGBoost:
 - The biggest difference is address history. XGBoost uses the month counts directly and
   barely uses the `prev_address_months_count` missing flag (0.06, 24th of 33), because trees
   handle NaN natively.
-- `customer_age` ranks 15th of 33 (0.12). Its effect is close to a step: near zero up to the
-  40s, then +0.15 at 50 and about +0.6 from 70 up.
+- `customer_age` ranks 15th of 33 (0.12). Its effect is close to a step: slightly negative (-0.22
+  to -0.07) up to the 40s, then +0.15 at 50 and about +0.6 from 70 up.
 - `income` matters more for XGBoost (0.23 vs 0.13) and acts mostly through the top band
   (+0.37 log-odds at 0.9, against 0.01 or less below it).
 
@@ -327,8 +328,10 @@ Place `Base.csv` in `data/`, then run the notebooks in order. Each notebook read
 previous one wrote.
 
 `03_hyperparameter_tuning` and `04_evaluation_and_fairness` train XGBoost on a GPU
-(`XGB_DEVICE = "cuda"`). Set `XGB_DEVICE = "cpu"` if you don't have one. With an RTX 4070
-SUPER, `03` takes about 15 minutes and the other notebooks take under 2 minutes each.
+(`XGB_DEVICE = "cuda"`). Set `XGB_DEVICE = "cpu"` if you don't have one. On an AMD Ryzen
+7 9800X3D CPU and an NVIDIA RTX 4070 SUPER GPU, `03` takes about 14 minutes (823 s): about 9.5 minutes for the logistic regression
+search, which runs on the CPU, and about 4 minutes for the XGBoost search. The other
+notebooks take under 2 minutes each.
 
 `05_explainability` caches SHAP values in `results/shap/` and only recomputes them when
 the model file changes.
