@@ -381,6 +381,8 @@ and `04`. With it off, results print inline and no server is needed.
 
 ## Citation
 
+This project uses the BAF dataset. If you use the data, cite the paper as the authors request:
+
 ```bibtex
 @article{jesusTurningTablesBiased2022,
   title={Turning the {{Tables}}: {{Biased}}, {{Imbalanced}}, {{Dynamic Tabular Datasets}} for {{ML Evaluation}}},
