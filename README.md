@@ -4,10 +4,15 @@ Fraud detection on the Base dataset of the Bank Account Fraud (BAF) suite. The p
 covers EDA, preprocessing, model tuning, evaluation at a fixed false positive rate, a
 fairness audit by customer age, and SHAP explanations.
 
-**Headline result:** tuned XGBoost catches **58.8%** of fraud at a 5% false positive rate
-(PR-AUC 0.223, ROC-AUC 0.899). Every model wrongly flags legitimate applicants aged 50+
-about 3 times as often as younger ones. Removing `customer_age` narrows that gap (FPR ratio
-0.32 to 0.43) for under 1 point of recall.
+### Key results
+
+- **Best model:** tuned XGBoost catches **58.8%** of fraud while flagging 5% of legitimate
+  applicants (PR-AUC 0.223, ROC-AUC 0.899).
+- **Age bias:** every model wrongly flags legitimate applicants aged 50+ about 3 times as
+  often as younger ones (12.2% vs 3.9% for tuned XGBoost).
+- **Removing age:** dropping `customer_age` lowers that false positive rate for 50+ to 9.9%
+  and raises the FPR ratio from 0.32 to 0.43, at a cost of 0.6 points of recall. Older
+  applicants are still flagged more than twice as often.
 
 ## The BAF dataset suite
 
