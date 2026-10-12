@@ -1,11 +1,30 @@
-data/*.csv
-data/*.parquet
-data/preprocessed/
-results/shap/
-models/
+# Generated folders are kept in the repo through .gitkeep files; their contents are ignored
+
+# Raw data (download Base.csv into data/)
+data/*
+!data/.gitkeep
+!data/Kaggle Page.url
+
+# Preprocessed splits written by 02
+!data/preprocessed/
+data/preprocessed/*/*
+!data/preprocessed/*/.gitkeep
+
+# Models written by 03
+models/*
+!models/.gitkeep
+
+# SHAP values cached by 05
+results/shap/*
+!results/shap/.gitkeep
+
+# MLflow tracking server
+mlartifacts/
+mlflow.db
+
+# Python and Jupyter
 .ipynb_checkpoints/
 __pycache__/
 .env
-mlartifacts/
-mlflow.db
+
 notebooks/Base.ipynb
