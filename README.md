@@ -166,7 +166,9 @@ groups are wrongly flagged at the same rate. It is reported as the FPR ratio:
 FPR ratio = min(group FPRs) / max(group FPRs)
 ```
 
-A value of 1 means equal false positive rates. It is reported two ways:
+A value of 1 means equal false positive rates. Every group is scored against the same
+threshold, the one that gives a 5% FPR over all of month 7, so the ratio shows how that
+single threshold treats each group. It is reported two ways:
 
 - **Under 50 vs 50 and over** (`customer_age` < 50 vs >= 50), the binary split used in the
   BAF paper. Because ages are recorded in decades, the 50s fall in the older group.
@@ -301,7 +303,8 @@ fixed value in the XGBoost plot therefore shows interactions the tree model lear
 ```
 notebooks/          01 to 05, run in order
 src/baf/            shared package: config, data, features, metrics, plotting, tracking
-pyproject.toml      makes src/baf installable with pip install -e .
+pyproject.toml      makes src/baf installable (installed by requirements.txt)
+requirements.txt    pinned dependencies
 data/               Base.csv goes here; preprocessed/ is written by 02 (not committed)
 models/             saved models and tuning_summary.json, written by 03 (not committed)
 results/shap/       cached SHAP values, written by 05 (not committed)
@@ -310,14 +313,15 @@ mlflow.db, mlartifacts/   local MLflow tracking data (not committed)
 
 ## Setup
 
-The notebooks were run with Python 3.11 and pandas 2.3, NumPy 2.4, scikit-learn 1.9,
-XGBoost 3.2, Optuna 4.9, MLflow 3.13, SHAP 0.51, matplotlib 3.11 and pyarrow 23.
-
-From the repository root, install the shared package in editable mode:
+The notebooks were run with Python 3.11. From the repository root, install the pinned
+dependencies:
 
 ```bash
-pip install -e .
+pip install -r requirements.txt
 ```
+
+This also installs the shared `baf` package from `src/baf/` in editable mode (the `-e .`
+line), so changes to it are picked up without reinstalling.
 
 Place `Base.csv` in `data/`, then run the notebooks in order. Each notebook reads what the
 previous one wrote.

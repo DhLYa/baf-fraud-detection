@@ -1,0 +1,26 @@
+# Versions the notebooks were last run with (Python 3.11)
+
+# Data
+pandas==2.3.3
+numpy==2.4.6
+scipy==1.17.1
+pyarrow==23.0.1
+
+# Modelling and tuning
+scikit-learn==1.9.0
+xgboost==3.2.0
+optuna==4.9.0
+joblib==1.5.3
+
+# Tracking and explainability
+mlflow==3.13.0
+cloudpickle==3.1.2
+shap==0.51.0
+
+# Plotting and notebooks
+matplotlib==3.11.0
+ipykernel==7.3.0
+ipywidgets==8.1.8
+
+# Shared notebook code in src/baf
+-e .
