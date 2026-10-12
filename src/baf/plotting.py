@@ -1,5 +1,5 @@
 """Shared chart styling, model colours and the ROC / precision-recall comparison."""
-import matplotlib.pyplot as plot
+import matplotlib.pyplot as plt
 from sklearn.metrics import precision_recall_curve, roc_curve
 
 MODEL_COLORS = {
@@ -10,21 +10,28 @@ MODEL_COLORS = {
     "Logistic Regression (tuned, no age)": "#c79a1e",
     "XGBoost (tuned, no age)": "#0f8a8a",
 }
-REFERENCE_COLOR = "#8a8984"
+REFERENCE_COLOR = "#8a8984"   # chance lines, base rates and thresholds
+TEXT_COLOR = "#52514e"        # axis labels, ticks and annotations
+GRID_COLOR = "#e5e5e5"
+MUTED_COLOR = "#c9c8c4"       # bars that are deliberately de-emphasised
+HIGHLIGHT_COLOR = "#eb6834"   # the series a chart is about
+
+CLASS_COLORS = {0: "#2a78d6", 1: HIGHLIGHT_COLOR}
+CLASS_LABELS = {0: "Non-Fraud", 1: "Fraud"}
 
 
 def style_axis(ax, title, ylabel):
     ax.set_title(title, fontsize=10, loc="left")
-    ax.set_ylabel(ylabel, fontsize=8, color="#52514e")
-    ax.tick_params(labelsize=8, colors="#52514e")
+    ax.set_ylabel(ylabel, fontsize=8, color=TEXT_COLOR)
+    ax.tick_params(labelsize=8, colors=TEXT_COLOR)
     ax.spines[["top", "right"]].set_visible(False)
-    ax.grid(axis="y", color="#e5e5e5", linewidth=0.8)
+    ax.grid(axis="y", color=GRID_COLOR, linewidth=0.8)
     ax.set_axisbelow(True)
 
 
 def plot_roc_pr(y_true, val_scores, results, model_names, title):
     # val_scores maps model name -> validation scores; results has one evaluate_model row per model
-    fig, (ax_roc, ax_pr) = plot.subplots(1, 2, figsize=(13, 5.5))
+    fig, (ax_roc, ax_pr) = plt.subplots(1, 2, figsize=(13, 5.5))
 
     for name in model_names:
         scores = val_scores[name]
@@ -46,14 +53,14 @@ def plot_roc_pr(y_true, val_scores, results, model_names, title):
 
     ax_roc.plot([0, 1], [0, 1], linestyle="--", linewidth=1, color=REFERENCE_COLOR, label="Chance")
     style_axis(ax_roc, "ROC curve", "True positive rate")
-    ax_roc.set_xlabel("False positive rate", fontsize=8, color="#52514e")
+    ax_roc.set_xlabel("False positive rate", fontsize=8, color=TEXT_COLOR)
     ax_roc.legend(loc="lower right", frameon=False, fontsize=9)
 
     base_rate = y_true.mean()
     ax_pr.axhline(base_rate, linestyle="--", linewidth=1, color=REFERENCE_COLOR,
                   label=f"Base rate ({base_rate:.2%})")
     style_axis(ax_pr, "Precision-recall curve", "Precision")
-    ax_pr.set_xlabel("Recall", fontsize=8, color="#52514e")
+    ax_pr.set_xlabel("Recall", fontsize=8, color=TEXT_COLOR)
     ax_pr.set_ylim(0, 1)
     ax_pr.legend(loc="upper right", frameon=False, fontsize=9)
 

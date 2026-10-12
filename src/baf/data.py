@@ -1,4 +1,6 @@
 """Cleaning the raw BAF data and loading the preprocessed splits written by 02."""
+from typing import NamedTuple
+
 import numpy as np
 import pandas as pd
 
@@ -32,8 +34,20 @@ def cast_categoricals(df):
     return df
 
 
+class Split(NamedTuple):
+    X_train: pd.DataFrame
+    X_val: pd.DataFrame
+    y_train: pd.Series
+    y_val: pd.Series
+
+
 def load_split(model):
-    # Preprocessed features and targets for one model family ("lr" or "xgb")
+    # Preprocessed features and targets for one model family ("lr" or "xgb"). Fields can be read by name
+    # (split.X_val) or unpacked in order (X_train, X_val, y_train, y_val = split)
     data_dir = PREPROCESSED_DIR / model
-    return (pd.read_parquet(data_dir / "X_train.parquet"), pd.read_parquet(data_dir / "X_val.parquet"),
-            pd.read_parquet(data_dir / "y_train.parquet")[TARGET], pd.read_parquet(data_dir / "y_val.parquet")[TARGET])
+    return Split(
+        X_train=pd.read_parquet(data_dir / "X_train.parquet"),
+        X_val=pd.read_parquet(data_dir / "X_val.parquet"),
+        y_train=pd.read_parquet(data_dir / "y_train.parquet")[TARGET],
+        y_val=pd.read_parquet(data_dir / "y_val.parquet")[TARGET],
+    )

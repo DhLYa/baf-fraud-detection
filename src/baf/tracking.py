@@ -2,7 +2,7 @@
 from contextlib import nullcontext
 
 import cloudpickle
-import matplotlib.pyplot as plot
+import matplotlib.pyplot as plt
 import mlflow
 import mlflow.sklearn
 import pandas as pd
@@ -36,6 +36,11 @@ METRIC_NAMES = {
 AGE_BUCKET_METRIC_NAMES = {label: "fpr_age_" + label.replace("-", "_").replace("+", "_plus")
                            for label in AGE_BUCKET_LABELS.values()}
 CLASS_NAMES = ["Non-Fraud", "Fraud"]
+
+def to_mlflow_metrics(metrics):
+    # MLflow-safe names for the metrics evaluate_model returns; any others (e.g. Threshold) are left out
+    return {METRIC_NAMES[name]: value for name, value in metrics.items() if name in METRIC_NAMES}
+
 
 def setup_mlflow():
     mlflow.set_tracking_uri(TRACKING_URI)
@@ -78,7 +83,7 @@ def log_model_run(name, model, X_val_model, y_true, scores, age, *, log_to_mlflo
     if extra_params:
         run_params.update(extra_params)
 
-    metrics = {metric: row[column] for column, metric in METRIC_NAMES.items()}
+    metrics = to_mlflow_metrics(row)
     for bucket, fpr in age_fpr["fpr"].items():
         metrics[AGE_BUCKET_METRIC_NAMES[bucket]] = fpr
 
@@ -91,15 +96,15 @@ def log_model_run(name, model, X_val_model, y_true, scores, age, *, log_to_mlflo
             fig = plot_roc_pr(y_true, {name: scores}, row.to_frame().T, [name],
                               f"{name} on validation month 7 (dot = threshold at {TARGET_FPR:.0%} FPR)")
             mlflow.log_figure(fig, "roc_pr_curves.png")
-            plot.close(fig)
+            plt.close(fig)
 
-            fig, ax = plot.subplots(figsize=(5, 4.5))
+            fig, ax = plt.subplots(figsize=(5, 4.5))
             ConfusionMatrixDisplay.from_predictions(y_true, y_pred, display_labels=CLASS_NAMES,
                                                     cmap="Blues", colorbar=False, values_format=",", ax=ax)
             ax.set_title(f"{name} at {TARGET_FPR:.0%} FPR threshold", fontsize=10, loc="left")
             fig.tight_layout()
             mlflow.log_figure(fig, "confusion_matrix.png")
-            plot.close(fig)
+            plt.close(fig)
 
             mlflow.log_text(report, "classification_report.txt")
             mlflow.log_text(age_fpr.to_csv(), "fpr_by_age_bucket.csv")
